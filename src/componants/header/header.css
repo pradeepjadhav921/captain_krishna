@@ -1,0 +1,75 @@
+/* General Reset */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0074D9; /* Blue background */
+  color: white;
+  padding: 10px 20px;
+  position: fixed; /* Fix the header at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+/* Logo or Title Styling */
+.header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap; /* Prevent text from breaking */
+}
+
+/* Button Container Styling */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap; /* Wrap buttons if the screen is too small */
+}
+
+/* Button Styling */
+.header-button, .logout-button {
+  background-color: #FF4136; /* Red button background */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+/* Green Logout Button */
+.logout-button {
+  background-color: #15ff00;
+}
+
+/* Hover Effects */
+.header-button:hover {
+  background-color: #E6392F;
+}
+
+.logout-button:hover {
+  background-color: #12cc00;
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 1.2rem;
+  }
+
+  .header-button, .logout-button {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+}

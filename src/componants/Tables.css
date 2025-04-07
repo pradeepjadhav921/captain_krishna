@@ -1,0 +1,97 @@
+/* General container styling */
+.tables-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align everything to the left */
+    justify-content: center;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+    width: 100%;
+}
+
+/* Section title */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+    text-align: left; /* Ensure section title aligns left */
+}
+
+/* Grid layout for tables */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* Keep 6 columns per row */
+    gap: 10px;
+    justify-content: flex-start; /* Align the grid to the left */
+    max-width: 100%; /* Prevent unwanted extra spacing */
+    min-height: 110px; /* Maintain alignment even for fewer tables */
+}
+
+/* Table box */
+.table-box {
+    width: 90px;
+    height: 90px;
+    padding: 8px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effect */
+.table-box:hover {
+    transform: scale(1.05);
+}
+
+/* Free table style */
+.free {
+    background-color: #d1f7c4;
+    color: #2c662d;
+    border: 2px solid #81c784;
+}
+
+/* Busy table style */
+.busy {
+    background-color: #f8c4c4;
+    color: #822727;
+    border: 2px solid #e57373;
+}
+
+/* Reserved table style */
+.reserved {
+    background-color: #fff3cd;
+    color: #fcbd00;
+    border: 2px solid #ffca2a;
+}
+
+/* Table number */
+.table-number {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Table status */
+.table-status {
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 320px) {
+    .tables-grid {
+        grid-template-columns: repeat(3, 1fr); /* Adjust to 4 per row on smaller screens */
+        max-width: 100%;
+    }
+
+    .table-box {
+        width: 80px;
+        height: 80px;
+    }
+}
