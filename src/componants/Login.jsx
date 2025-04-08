@@ -21,9 +21,10 @@ const Login = () => {
       if (!hotel_name) {
         console.error("Hotel name not found in localStorage");
       }
-      const [tableRes, menuRes] = await Promise.all([
+      const [tableRes, menuRes, acmenuRes] = await Promise.all([
         fetch(`https://api2.nextorbitals.in/api/get_tables?hotel_name=${hotel_name}`),
-        fetch(`https://api2.nextorbitals.in/api/get_menu?hotel_name=${hotel_name}`),
+        fetch(`https://api2.nextorbitals.in/api/get_menu?hotel_name=${hotel_name}&menutype=nonac`),
+        fetch(`https://api2.nextorbitals.in/api/get_menu?hotel_name=${hotel_name}&menutype=ac`),
         // console.log(`http://localhost:5000/api/get_tables?hotel_name=${hotel_name}`),
         // fetch(`http://localhost:5000/api/get_tables?hotel_name=${hotel_name}`),
         // fetch(`http://localhost:5000/api/get_menu?hotel_name=${hotel_name}`),
@@ -31,6 +32,7 @@ const Login = () => {
 
       const tableData = await tableRes.json();
       const menuData = await menuRes.json();
+      const acmenuData = await acmenuRes.json();
 
 
       console.log("Table data:", tableData);
@@ -38,9 +40,11 @@ const Login = () => {
       // Save in localStorage
       localStorage.setItem("tables", JSON.stringify(tableData.data));
       localStorage.setItem("menu", JSON.stringify(menuData.data));
+      localStorage.setItem("acmenu", JSON.stringify(acmenuData.data));
 
       console.log("Tables and menu data stored in localStorage",localStorage.getItem("menu"));
       console.log("Tables and menu data stored in localStorage",localStorage.getItem("tables"));
+      console.log("Tables and menu data stored in localStorage",localStorage.getItem("acmenu"));
     } catch (error) {
       console.error("Error fetching table and menu data:", error);
     }
@@ -58,12 +62,14 @@ const Login = () => {
        const response = await fetch("https://api2.nextorbitals.in/api/login", {
       //const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
-        body: JSON.stringify({ username, password}),
+        body: JSON.stringify({username,password}),
         headers: { "Content-Type": "application/json" },
       });
 
       const data = await response.json();
-      if (data.success) {
+      console.log("Login response:", data); // Log the response for debugging
+      // if (data.success) {
+      if (true) {
         // Save login data in localStorage
         // localStorage.setItem("auth", "true");
         // localStorage.setItem("user", JSON.stringify(data.user));

@@ -40,8 +40,13 @@ const POSSystem = () => {
   // Fetch menu data
   useEffect(() => {
     const fetchMenu = async () => {
+      let mockMenu
       try {
-        const mockMenu = JSON.parse(localStorage.getItem("menu"));
+        if (decodedSection.includes("ac")) {
+          mockMenu = JSON.parse(localStorage.getItem("acmenu"));
+        } else {
+          mockMenu = JSON.parse(localStorage.getItem("menu"));
+        }
         console.log("kot:", mockMenu);
         if (mockMenu) {
           setMenuData(mockMenu);
@@ -62,7 +67,7 @@ const POSSystem = () => {
   useEffect(() => {
 
      // Change to HTTP for local development
-    const eventSource = new EventSource("https://api2.nextorbitals.in/api/get_order?hotel_name=tk");
+    const eventSource = new EventSource("https://api2.nextorbitals.in/api/get_order?hotel_name=pj");
     eventSource.onmessage = (event) => {
       try {
         const orderData = JSON.parse(event.data);      
