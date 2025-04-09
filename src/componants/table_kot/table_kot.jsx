@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation  } from "react-router-dom";
 import { autoLogout } from "../../utility/autoLogout.jsx";
 import { useParams } from "react-router-dom";
+import { initializeUSBPrinter, printReceiptViaUSB } from "../../utility/usbPrinterUtility.jsx";
 import "./table_kot.css";
 
 const POSSystem = () => {
@@ -21,6 +22,7 @@ const POSSystem = () => {
   const [lastSelectedItem, setLastSelectedItem] = useState(null);
   const { section, tableNumber } = useParams();
   const decodedSection = decodeURIComponent(section);
+  const [printerDevice, setPrinterDevice] = useState(null);
   const [bill, setBill] = useState(() => {
     try {
       const savedBill = localStorage.getItem(`table-${decodedSection}-${tableNumber}-bill`);
@@ -131,7 +133,42 @@ const POSSystem = () => {
     };
   }, [decodedSection, tableNumber]); // Add dependencies
 
-
+// Update your payment handler
+const handlePayment = async () => {
+  try {
+    // Prepare bill data
+    const billData = {
+      section: decodedSection,
+      tableNumber,
+      groupedItems: getGroupedItems(),
+      subtotal: calculateSubtotal(),
+      tax: calculateTax(),
+      total: calculateTotal()
+    };
+    
+    // Print receipt
+    if (printerDevice) {
+      await printReceiptViaUSB(
+        printerDevice,
+        billData,
+        calculateSubtotal(),
+        calculateTax(),
+        calculateTotal()
+      );
+    } else {
+      throw new Error('Printer not connected');
+    }
+    
+    // Show success message
+    alert(`Payment processed for ¥${calculateTotal().toFixed(2)}`);
+    
+    // Clear the bill after successful payment
+    clearBill();
+  } catch (error) {
+    console.error('Payment/printing error:', error);
+    alert(`Payment processed but printing failed: ${error.message}`);
+  }
+};
 
 
 
@@ -144,7 +181,27 @@ const POSSystem = () => {
     }
   }, [bill, decodedSection, tableNumber]);
 
+
+// Initialize printer when component mounts
+// useEffect(() => {
+//   const initPrinter = async () => {
+//     try {
+//       const device = await initializeUSBPrinter();
+//       setPrinterDevice(device);
+//     } catch (error) {
+//       console.warn('Printer initialization failed:', error);
+//       // You might want to show a warning to the user
+//     }
+//   };
   
+//   initPrinter();
+  
+//   return () => {
+//     if (printerDevice) {
+//       printerDevice.close();
+//     }
+//   };
+// }, []);
 
 
 
@@ -458,6 +515,34 @@ const clearBill = () => {
     });
   };
 
+const [printerError, setPrinterError] = useState(null);
+
+const handleConnectPrinter = async () => {
+  setPrinterError(null);
+  
+  try {
+    const device = await initializeUSBPrinter();
+    setPrinterDevice(device);
+  } catch (error) {
+    if (error.message.includes('No device selected') || 
+        error.message.includes('Please select')) {
+      setPrinterError('Please select a printer from the browser dialog');
+    } else {
+      setPrinterError(error.message);
+    }
+  }
+};
+
+
+  navigator.usb.requestDevice({ filters: [] }).then(device => {
+    console.log('Connected Device:', {
+      vendorId: device.vendorId,
+      productId: device.productId,
+      manufacturer: device.manufacturerName,
+      product: device.productName
+    });
+  });
+
 
   //First, modify your POSSystem component to store the total price:
   const saveTableData = () => {
@@ -653,12 +738,23 @@ const clearBill = () => {
           <button 
             className="payment-btn" 
             disabled={bill.length === 0}
-            onClick={() => alert(`Payment processed for ¥${calculateTotal().toFixed(2)}`)}
-          >
+            onClick={handlePayment}  // Changed from alert to handlePayment
+            >
             Process Payment (¥{calculateTotal().toFixed(2)})
           </button>
+          <div className="printer-status">
+            Printer Status: 
+            <span className={printerDevice ? "connected" : "disconnected"}>
+              {printerDevice ? "Connected" : "Disconnected"}
+            </span>
+            <button 
+              onClick={handleConnectPrinter}
+              disabled={!!printerDevice} // Disable if already connected
+            >
+              {printerDevice ? "Connected" : "Connect Printer"}
+            </button>
+          </div>
         </div>{ /* Order summary */}
-
       </div> { /* Menu items box and order summery */}
 
 
